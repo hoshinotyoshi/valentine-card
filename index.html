@@ -96,7 +96,7 @@ button {
 }
 
 .celebrate img {
-  width: 260px;
+  width: 160px;
   border-radius: 20px;
   position: absolute;
   animation: pop 0.6s ease;
@@ -136,7 +136,10 @@ button {
 </div>
 
 <div class="celebrate" id="celebrate">
-  <img src="images/2.jpg" alt="hehe" id="celebrateImg" />
+  <img src="images/1.jpg" alt="img1" class="celebrate-img" />
+  <img src="images/2.jpg" alt="img2" class="celebrate-img" />
+  <img src="images/5.jpg" alt="img3" class="celebrate-img" />
+  <img src="images/7.jpg" alt="img4" class="celebrate-img" />
   <h2>Yay!! I'M COMING!</h2>
 </div>
 
@@ -145,37 +148,32 @@ const noBtn = document.getElementById('noBtn');
 const yesBtn = document.getElementById('yesBtn');
 const area = document.getElementById('buttonArea');
 const celebrate = document.getElementById('celebrate');
-const celebrateImg = document.getElementById('celebrateImg');
+const celebrateImgs = document.querySelectorAll('.celebrate-img');
 
 let dodgeCount = 0;
 const images = ['images/3.jpg', 'images/4.jpg', 'images/6.jpg'];
 
-// Make no button dodge outside the card
+// No button dodges outside the card
 noBtn.addEventListener('mouseenter', () => {
   dodgeCount++;
-
-  // Calculate screen-wide dodge
   const maxX = window.innerWidth - noBtn.offsetWidth;
   const maxY = window.innerHeight - noBtn.offsetHeight;
   noBtn.style.left = Math.random() * maxX + 'px';
   noBtn.style.top = Math.random() * maxY + 'px';
 
-  // shrink button
   const scale = Math.max(0.4, 1 - dodgeCount * 0.1);
   noBtn.style.transform = `scale(${scale})`;
 
-  // pop image
   const img = document.createElement('img');
   img.src = images[dodgeCount % images.length];
   img.className = 'popup-img';
   img.style.left = Math.random() * (area.offsetWidth - 80) + 'px';
   img.style.top = Math.random() * 40 + 'px';
   area.appendChild(img);
-
   setTimeout(() => img.remove(), 1200);
 });
 
-// Generate a falling heart
+// Falling hearts
 function createFallingHeart() {
   const heart = document.createElement('div');
   heart.classList.add('falling-heart');
@@ -184,34 +182,34 @@ function createFallingHeart() {
   heart.style.fontSize = (15 + Math.random() * 25) + 'px';
   heart.style.animationDuration = (3 + Math.random() * 3) + 's';
   document.body.appendChild(heart);
-
-  // Remove heart after it falls
   setTimeout(() => heart.remove(), 6000);
 }
 
-// Move the celebration image around randomly
-function moveCelebrateImg() {
-  const x = Math.random() * (window.innerWidth - celebrateImg.offsetWidth);
-  const y = Math.random() * (window.innerHeight - celebrateImg.offsetHeight);
-  celebrateImg.style.left = x + 'px';
-  celebrateImg.style.top = y + 'px';
+// Move celebration images randomly
+function moveCelebrateImages() {
+  celebrateImgs.forEach(img => {
+    const x = Math.random() * (window.innerWidth - img.offsetWidth);
+    const y = Math.random() * (window.innerHeight - img.offsetHeight);
+    img.style.left = x + 'px';
+    img.style.top = y + 'px';
+  });
 }
 
 yesBtn.addEventListener('click', () => {
   celebrate.classList.add('show');
 
-  // Continuously generate falling hearts
+  // Generate falling hearts continuously
   const heartInterval = setInterval(createFallingHeart, 200);
 
-  // Move image randomly every 1.2s
-  const imgInterval = setInterval(moveCelebrateImg, 1200);
+  // Move images around every 1.2s
+  const imgInterval = setInterval(moveCelebrateImages, 1200);
 
-  // Stop generating hearts after 10s (optional)
+  // Stop after 10s (optional)
   setTimeout(() => clearInterval(heartInterval), 10000);
   setTimeout(() => clearInterval(imgInterval), 10000);
 
   // Initialize first position
-  moveCelebrateImg();
+  moveCelebrateImages();
 });
 </script>
 
