@@ -4,8 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Will You Be My Valentine? 💖</title>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 <style>
-* { box-sizing: border-box; font-family: 'Pacifico', regular; }
+* { box-sizing: border-box; font-family: 'Pacifico', cursive; }
 
 body {
   margin: 0;
@@ -118,7 +119,7 @@ button {
   pointer-events: none;
   font-size: 20px;
   user-select: none;
-  z-index: 9; /* ensure hearts are above background but behind images */
+  z-index: 9;
   animation-name: fall;
   animation-timing-function: linear;
   animation-iteration-count: 1;
@@ -148,7 +149,7 @@ button {
   <img src="images/2.jpg" alt="img2" class="celebrate-img" />
   <img src="images/5.jpg" alt="img3" class="celebrate-img" />
   <img src="images/7.jpg" alt="img4" class="celebrate-img" />
-  <h2>Yay!! It's a date ☺️!</h2>
+  <h2 id="celebrateText">Yay!! It's a date ☺️!</h2>
 </div>
 
 <script>
@@ -194,7 +195,6 @@ noBtn.addEventListener('mouseenter', () => {
   const scale = Math.max(0.5, 1 - dodgeCount * 0.05);
   noBtn.style.transform = `scale(${scale})`;
 
-  // Popup image further away
   const img = document.createElement('img');
   img.src = images[dodgeCount % images.length];
   img.className = 'popup-img';
@@ -220,21 +220,23 @@ function createFallingHeart() {
 }
 
 // ---------- CELEBRATE IMAGES CIRCLE & FLOAT ----------
-let angleOffset = 0; // rotation angle for orbit
+let angleOffset = 0;
 function animateCircleImages() {
-  const text = celebrate.querySelector('h2');
-  const textRect = text.getBoundingClientRect();
-  const centerX = textRect.left + textRect.width / 2;
-  const centerY = textRect.top + textRect.height / 2;
+  const text = document.getElementById('celebrateText');
+  const rect = text.getBoundingClientRect();
+  const containerRect = celebrate.getBoundingClientRect();
+
+  // center relative to celebrate container
+  const centerX = rect.left + rect.width/2 - containerRect.left;
+  const centerY = rect.top + rect.height/2 - containerRect.top;
   const radius = 180;
 
   celebrateImgs.forEach((img, i) => {
     const angle = angleOffset + i * (Math.PI / 2);
-    const x = centerX + radius * Math.cos(angle) - img.offsetWidth / 2;
-    const y = centerY + radius * Math.sin(angle) - img.offsetHeight / 2;
+    const x = centerX + radius * Math.cos(angle) - img.offsetWidth/2;
+    const y = centerY + radius * Math.sin(angle) - img.offsetHeight/2;
 
-    // Floating effect (scale/pulse)
-    const scale = 1 + 0.1 * Math.sin(Date.now() / 300 + i);
+    const scale = 1 + 0.1 * Math.sin(Date.now()/300 + i);
     img.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
     img.style.opacity = 1;
   });
@@ -246,11 +248,7 @@ function animateCircleImages() {
 // ---------- YES BUTTON ----------
 yesBtn.addEventListener('click', () => {
   celebrate.classList.add('show');
-
-  // Continuous hearts
   setInterval(createFallingHeart, 200);
-
-  // Animate orbiting and floating images
   animateCircleImages();
 });
 </script>
