@@ -30,7 +30,7 @@ body {
 }
 
 h1 { color: #ffe6f0; margin-top: 0; text-shadow: 1px 1px 5px #800033; }
-p { font-size: 1.1rem; color: #fff; text-shadow: 1px 1px 3px #660022; }
+p { font-size: 1.1rem; color: ##e2d2e9; text-shadow: 1px 1px 3px #660022; }
 
 .buttons {
   margin-top: 30px;
@@ -214,10 +214,11 @@ function createFallingHeart() {
   heart.classList.add('falling-heart');
   heart.textContent = '❤️';
   heart.style.left = Math.random() * window.innerWidth + 'px';
-  heart.style.fontSize = (15 + Math.random() * 25) + 'px';
-  heart.style.animationDuration = (3 + Math.random() * 3) + 's';
+  heart.style.fontSize = (20 + Math.random() * 30) + 'px';
+  heart.style.animationDuration = (4 + Math.random() * 3) + 's';
+  heart.style.opacity = 0.8;
   document.body.appendChild(heart);
-  setTimeout(() => heart.remove(), 6000);
+  setTimeout(() => heart.remove(), 8000);
 }
 
 // Smoothly move celebration images
@@ -234,7 +235,7 @@ function moveCelebrateImages() {
 yesBtn.addEventListener('click', () => {
   celebrate.classList.add('show');
 
-  const heartInterval = setInterval(createFallingHeart, 200);
+  // const heartInterval = setInterval(createFallingHeart, 200);
   const imgInterval = setInterval(moveCelebrateImages, 1200);
 
   setTimeout(() => clearInterval(heartInterval), 10000);
