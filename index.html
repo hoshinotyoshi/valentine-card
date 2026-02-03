@@ -227,9 +227,10 @@ function animateCircleImages() {
   const containerRect = celebrate.getBoundingClientRect();
 
   // center relative to celebrate container
-  const centerX = rect.left + rect.width/2 - containerRect.left;
-  const centerY = rect.top + rect.height/2 - containerRect.top;
+  const centerX = textRect.left - containerRect.left + textRect.width / 2;
+  const centerY = textRect.top - containerRect.top + textRect.height / 2;
   const radius = 180;
+
 
   celebrateImgs.forEach((img, i) => {
     const angle = angleOffset + i * (Math.PI / 2);
