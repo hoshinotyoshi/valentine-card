@@ -13,7 +13,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #d5b592, #d9ead3);
+  background: radial-gradient(circle at center, #ff1a4d, #990033);
   overflow: hidden;
 }
 
@@ -29,8 +29,8 @@ body {
   z-index: 1;
 }
 
-h1 { color: #b6d7a8; margin-top: 0; }
-p { font-size: 1.1rem; }
+h1 { color: #ffe6f0; margin-top: 0; text-shadow: 1px 1px 5px #800033; }
+p { font-size: 1.1rem; color: #fff; text-shadow: 1px 1px 3px #660022; }
 
 .buttons {
   margin-top: 30px;
@@ -48,7 +48,7 @@ button {
 }
 
 #yesBtn {
-  background: #cc0000;
+  background: #ff3366;
   color: white;
 }
 
@@ -99,10 +99,15 @@ button {
   width: 160px;
   border-radius: 20px;
   position: absolute;
-  animation: pop 0.6s ease;
+  transition: all 1.2s ease;
+  opacity: 0;
 }
 
-.celebrate h2 { color: white; margin-top: 20px; }
+.celebrate img.show {
+  opacity: 1;
+}
+
+.celebrate h2 { color: white; margin-top: 20px; text-shadow: 2px 2px 6px #800033; }
 
 /* Falling hearts */
 .falling-heart {
@@ -136,10 +141,10 @@ button {
 </div>
 
 <div class="celebrate" id="celebrate">
-  <img src="images/1.jpg" alt="img1" class="celebrate-img" />
-  <img src="images/2.jpg" alt="img2" class="celebrate-img" />
-  <img src="images/5.jpg" alt="img3" class="celebrate-img" />
-  <img src="images/7.jpg" alt="img4" class="celebrate-img" />
+  <img src="images/2.jpg" alt="img1" class="celebrate-img" />
+  <img src="images/3.jpg" alt="img2" class="celebrate-img" />
+  <img src="images/4.jpg" alt="img3" class="celebrate-img" />
+  <img src="images/6.jpg" alt="img4" class="celebrate-img" />
   <h2>Yay!! I'M COMING!</h2>
 </div>
 
@@ -153,15 +158,39 @@ const celebrateImgs = document.querySelectorAll('.celebrate-img');
 let dodgeCount = 0;
 const images = ['images/3.jpg', 'images/4.jpg', 'images/6.jpg'];
 
-// No button dodges outside the card
+// No button dodges within the card and avoids Yes button
 noBtn.addEventListener('mouseenter', () => {
   dodgeCount++;
-  const maxX = window.innerWidth - noBtn.offsetWidth;
-  const maxY = window.innerHeight - noBtn.offsetHeight;
-  noBtn.style.left = Math.random() * maxX + 'px';
-  noBtn.style.top = Math.random() * maxY + 'px';
 
-  const scale = Math.max(0.4, 1 - dodgeCount * 0.1);
+  const yesRect = yesBtn.getBoundingClientRect();
+  const areaRect = area.getBoundingClientRect();
+
+  const maxX = area.offsetWidth - noBtn.offsetWidth;
+  const maxY = area.offsetHeight - noBtn.offsetHeight;
+
+  let newLeft, newTop;
+  let attempts = 0;
+
+  do {
+    newLeft = Math.random() * maxX;
+    newTop = Math.random() * maxY;
+
+    // Convert to viewport coordinates for overlap check
+    const noLeft = areaRect.left + newLeft;
+    const noTop = areaRect.top + newTop;
+    const noRight = noLeft + noBtn.offsetWidth;
+    const noBottom = noTop + noBtn.offsetHeight;
+
+    // Check overlap with Yes button
+    const overlap = !(noRight < yesRect.left || noLeft > yesRect.right || noBottom < yesRect.top || noTop > yesRect.bottom);
+    attempts++;
+    if (!overlap) break; // Found a position that doesn't overlap
+  } while (attempts < 100);
+
+  noBtn.style.left = newLeft + 'px';
+  noBtn.style.top = newTop + 'px';
+
+  const scale = Math.max(0.5, 1 - dodgeCount * 0.05);
   noBtn.style.transform = `scale(${scale})`;
 
   const img = document.createElement('img');
@@ -185,9 +214,10 @@ function createFallingHeart() {
   setTimeout(() => heart.remove(), 6000);
 }
 
-// Move celebration images randomly
+// Smoothly move celebration images
 function moveCelebrateImages() {
   celebrateImgs.forEach(img => {
+    img.classList.add('show');
     const x = Math.random() * (window.innerWidth - img.offsetWidth);
     const y = Math.random() * (window.innerHeight - img.offsetHeight);
     img.style.left = x + 'px';
@@ -198,17 +228,12 @@ function moveCelebrateImages() {
 yesBtn.addEventListener('click', () => {
   celebrate.classList.add('show');
 
-  // Generate falling hearts continuously
   const heartInterval = setInterval(createFallingHeart, 200);
-
-  // Move images around every 1.2s
   const imgInterval = setInterval(moveCelebrateImages, 1200);
 
-  // Stop after 10s (optional)
   setTimeout(() => clearInterval(heartInterval), 10000);
   setTimeout(() => clearInterval(imgInterval), 10000);
 
-  // Initialize first position
   moveCelebrateImages();
 });
 </script>
