@@ -7,134 +7,139 @@
 <style>
 * { box-sizing: border-box; font-family: 'Helvetica Neue', regular; }
 
-
 body {
-margin: 0;
-height: 100vh;
-display: flex;
-align-items: center;
-justify-content: center;
-background: linear-gradient(135deg, ##d5b592, #d9ead3);
-overflow: hidden;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #d5b592, #d9ead3);
+  overflow: hidden;
 }
-
 
 .card {
-background: rgba(255,255,255,0.95);
-border-radius: 24px;
-padding: 40px 30px 50px;
-width: 90%;
-max-width: 420px;
-text-align: center;
-box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-position: relative;
+  background: rgba(255,255,255,0.95);
+  border-radius: 24px;
+  padding: 40px 30px 50px;
+  width: 90%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  position: relative;
 }
-
 
 h1 { color: #b6d7a8; margin-top: 0; }
 p { font-size: 1.1rem; }
 
-
 .buttons {
-margin-top: 30px;
-position: relative;
-height: 160px;
+  margin-top: 30px;
+  position: relative;
+  height: 160px;
 }
-
 
 button {
-padding: 14px 28px;
-font-size: 1.1rem;
-border-radius: 999px;
-border: none;
-cursor: pointer;
-transition: transform 0.15s ease;
+  padding: 14px 28px;
+  font-size: 1.1rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease;
 }
-
 
 #yesBtn {
-background: ##cc0000;
-color: white;
+  background: #cc0000;
+  color: white;
 }
-
 
 #noBtn {
-background: #ddd;
-color: #555;
-position: absolute;
-left: 50%;
-top: 80px;
-transform: translateX(-50%);
+  background: #ddd;
+  color: #555;
+  position: absolute;
+  left: 50%;
+  top: 80px;
+  transform: translateX(-50%);
 }
-
 
 .popup-img {
-position: absolute;
-width: 80px;
-border-radius: 12px;
-box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-animation: pop 0.4s ease;
-pointer-events: none;
+  position: absolute;
+  width: 80px;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  animation: pop 0.4s ease;
+  pointer-events: none;
 }
-
 
 @keyframes pop {
-from { transform: scale(0.3); opacity: 0; }
-to { transform: scale(1); opacity: 1; }
+  from { transform: scale(0.3); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
-
 
 .celebrate {
-position: fixed;
-inset: 0;
-background: linear-gradient(135deg, #ff758c, #ff7eb3);
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-opacity: 0;
-pointer-events: none;
-transition: opacity 0.6s ease;
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #ff758c, #ff7eb3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
 }
-
 
 .celebrate.show {
-opacity: 1;
-pointer-events: auto;
+  opacity: 1;
+  pointer-events: auto;
 }
-
 
 .celebrate img {
-width: 260px;
-border-radius: 20px;
-animation: pop 0.6s ease;
+  width: 260px;
+  border-radius: 20px;
+  animation: pop 0.6s ease;
 }
 
-
 .celebrate h2 { color: white; margin-top: 20px; }
+
+/* Fancy floating hearts */
+.floating-heart {
+  position: absolute;
+  bottom: 20px;
+  color: #ff0033;
+  pointer-events: none;
+  animation-name: floatUpFancy;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes floatUpFancy {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-250px) rotate(360deg) scale(1.5);
+    opacity: 0;
+  }
+}
 </style>
 </head>
 <body>
 
-
 <div class="card">
-<h1>Hey boo!</h1>
-<img src="images/8.jpg" alt="hehe" />
-<p>Will you be my Valentine?</p>
+  <h1>Hey boo!</h1>
+  <img src="images/8.jpg" alt="hehe" />
+  <p>Will you be my Valentine?</p>
 
-
-<div class="buttons" id="buttonArea">
-<button id="yesBtn">Yes 💕</button>
-<button id="noBtn">No 😅</button>
+  <div class="buttons" id="buttonArea">
+    <button id="yesBtn">Yes 💕</button>
+    <button id="noBtn">No 😅</button>
+  </div>
 </div>
-</div>
-
 
 <div class="celebrate" id="celebrate">
-<img src="images/2.jpg" alt="hehe" />
-<h2>Yay!! I'M COMING!</h2>
+  <img src="images/2.jpg" alt="hehe" />
+  <h2>Yay!! I'M COMING!</h2>
 </div>
-
 
 <script>
 const noBtn = document.getElementById('noBtn');
@@ -142,53 +147,65 @@ const yesBtn = document.getElementById('yesBtn');
 const area = document.getElementById('buttonArea');
 const celebrate = document.getElementById('celebrate');
 
-
 let dodgeCount = 0;
-
-
 const images = [
-'images/3.jpg',
-'images/4.jpg',
-'images/6.jpg'
+  'images/3.jpg',
+  'images/4.jpg',
+  'images/6.jpg'
 ];
 
-
 noBtn.addEventListener('mouseenter', () => {
-dodgeCount++;
+  dodgeCount++;
 
+  // move faster & farther
+  const maxX = area.offsetWidth - noBtn.offsetWidth;
+  const maxY = area.offsetHeight - noBtn.offsetHeight;
+  noBtn.style.left = Math.random() * maxX + 'px';
+  noBtn.style.top = Math.random() * maxY + 'px';
 
-// move faster & farther
-const maxX = area.offsetWidth - noBtn.offsetWidth;
-const maxY = area.offsetHeight - noBtn.offsetHeight;
-noBtn.style.left = Math.random() * maxX + 'px';
-noBtn.style.top = Math.random() * maxY + 'px';
+  // shrink button
+  const scale = Math.max(0.4, 1 - dodgeCount * 0.1);
+  noBtn.style.transform = `scale(${scale})`;
 
+  // pop image
+  const img = document.createElement('img');
+  img.src = images[dodgeCount % images.length];
+  img.className = 'popup-img';
+  img.style.left = Math.random() * (area.offsetWidth - 80) + 'px';
+  img.style.top = Math.random() * 40 + 'px';
+  area.appendChild(img);
 
-// shrink button
-const scale = Math.max(0.4, 1 - dodgeCount * 0.1);
-noBtn.style.transform = `scale(${scale})`;
-
-
-// pop image
-const img = document.createElement('img');
-img.src = images[dodgeCount % images.length];
-img.className = 'popup-img';
-img.style.left = Math.random() * (area.offsetWidth - 80) + 'px';
-img.style.top = Math.random() * 40 + 'px';
-area.appendChild(img);
-
-
-setTimeout(() => img.remove(), 1200);
+  setTimeout(() => img.remove(), 1200);
 });
 
+// Function to create a floating heart
+function createHeart() {
+  const heart = document.createElement('div');
+  heart.classList.add('floating-heart');
+  heart.textContent = '❤️';
+
+  // Random horizontal position inside the card
+  heart.style.left = Math.random() * (area.offsetWidth - 20) + 'px';
+  // Random size
+  const size = 15 + Math.random() * 25;
+  heart.style.fontSize = size + 'px';
+  // Random animation duration
+  const duration = 2 + Math.random() * 2;
+  heart.style.animationDuration = duration + 's';
+
+  area.appendChild(heart);
+
+  setTimeout(() => heart.remove(), duration * 1000);
+}
 
 yesBtn.addEventListener('click', () => {
-celebrate.classList.add('show');
+  celebrate.classList.add('show');
+
+  // Spawn hearts continuously for 2 seconds
+  const heartInterval = setInterval(createHeart, 150);
+  setTimeout(() => clearInterval(heartInterval), 2000);
 });
 </script>
 
-
 </body>
 </html>
-
-  
