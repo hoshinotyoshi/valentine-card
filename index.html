@@ -175,16 +175,14 @@ noBtn.addEventListener('mouseenter', () => {
     newLeft = Math.random() * maxX;
     newTop = Math.random() * maxY;
 
-    // Convert to viewport coordinates for overlap check
     const noLeft = areaRect.left + newLeft;
     const noTop = areaRect.top + newTop;
     const noRight = noLeft + noBtn.offsetWidth;
     const noBottom = noTop + noBtn.offsetHeight;
 
-    // Check overlap with Yes button
     const overlap = !(noRight < yesRect.left || noLeft > yesRect.right || noBottom < yesRect.top || noTop > yesRect.bottom);
     attempts++;
-    if (!overlap) break; // Found a position that doesn't overlap
+    if (!overlap) break;
   } while (attempts < 100);
 
   noBtn.style.left = newLeft + 'px';
@@ -193,11 +191,19 @@ noBtn.addEventListener('mouseenter', () => {
   const scale = Math.max(0.5, 1 - dodgeCount * 0.05);
   noBtn.style.transform = `scale(${scale})`;
 
+  // Popup image further away from the No button
   const img = document.createElement('img');
   img.src = images[dodgeCount % images.length];
   img.className = 'popup-img';
-  img.style.left = Math.random() * (area.offsetWidth - 80) + 'px';
-  img.style.top = Math.random() * 40 + 'px';
+
+  const angle = Math.random() * 2 * Math.PI;
+  const distance = 50 + Math.random() * 70; // 50-120px away
+  const offsetX = Math.cos(angle) * distance;
+  const offsetY = Math.sin(angle) * distance;
+
+  img.style.left = newLeft + offsetX + 'px';
+  img.style.top = newTop + offsetY + 'px';
+
   area.appendChild(img);
   setTimeout(() => img.remove(), 1200);
 });
