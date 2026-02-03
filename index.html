@@ -29,8 +29,8 @@ body {
   z-index: 1;
 }
 
-h1 { color: #ffe6f0; margin-top: 0; text-shadow: 1px 1px 5px #800033; }
-p { font-size: 1.1rem; color: #fff; text-shadow: 1px 1px 3px #660022; }
+h1 { color: #cf427a; margin-top: 0; text-shadow: 1px 1px 5px #800033; }
+p { font-size: 1.1rem; color: #edc2d3; text-shadow: 1px 1px 3px #660022; }
 
 .buttons {
   margin-top: 30px;
@@ -220,10 +220,10 @@ function createFallingHeart() {
 }
 
 // ---------- CELEBRATE IMAGES CIRCLE & FLOAT ----------
-let angleOffset = 0; // rotation angle for orbit
-function animateCircleImages() {
-  const centerX = window.innerWidth / 2;
-  const centerY = window.innerHeight / 2;
+const text = celebrate.querySelector('h2');
+  const textRect = text.getBoundingClientRect();
+  const centerX = textRect.left + textRect.width / 2;
+  const centerY = textRect.top + textRect.height / 2;
   const radius = 180;
 
   celebrateImgs.forEach((img, i) => {
@@ -240,17 +240,6 @@ function animateCircleImages() {
   angleOffset += 0.02;
   requestAnimationFrame(animateCircleImages);
 }
-
-// ---------- YES BUTTON ----------
-yesBtn.addEventListener('click', () => {
-  celebrate.classList.add('show');
-
-  // Continuous hearts
-  setInterval(createFallingHeart, 200);
-
-  // Animate orbiting and floating images
-  animateCircleImages();
-});
 </script>
 
 </body>
