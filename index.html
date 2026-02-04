@@ -154,7 +154,7 @@ button {
 
   <div class="buttons" id="buttonArea">
     <button id="yesBtn">Yes 💕</button>
-    <button id="noBtn">No 😅</button>
+    <button id="noBtn">No 🥲</button>
   </div>
 </div>
 
@@ -232,8 +232,8 @@ function animateCircleImages(){
   const rect = celebrateText.getBoundingClientRect();
   const containerRect = celebrate.getBoundingClientRect();
   // Center relative to celebrate container
-  const centerX = rect.left - containerRect.left + rect.width;
-  const centerY = rect.top - containerRect.top + rect.height;
+  const centerX = rect.left - containerRect.left + rect.width/2;
+  const centerY = rect.top - containerRect.top + rect.height/2;
   const radius = 180;
 
   celebrateImgs.forEach((img,i)=>{
@@ -253,7 +253,9 @@ yesBtn.addEventListener('click',()=>{
   celebrate.classList.add('show');
   celebrateText.classList.add('shake');
   setInterval(createFallingHeart,300);
-  animateCircleImages();
+
+  // ensure layout is ready, then start orbit
+  requestAnimationFrame(() => animateCircleImages());
 });
 </script>
 
