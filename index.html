@@ -62,20 +62,6 @@ button {
   transform: translateX(-50%);
 }
 
-.popup-img {
-  position: absolute;
-  width: 80px;
-  border-radius: 12px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-  animation: pop 0.4s ease;
-  pointer-events: none;
-}
-
-@keyframes pop {
-  from { transform: scale(0.3); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
 .celebrate {
   position: fixed;
   inset: 0;
@@ -159,63 +145,13 @@ button {
   <img src="images/2.jpg" alt="img2" class="celebrate-img" />
   <img src="images/5.jpg" alt="img3" class="celebrate-img" />
   <img src="images/7.jpg" alt="img4" class="celebrate-img" />
-  <h2 id="celebrateText">Yay!! It's a datee ☺️!</h2>
+  <h2 id="celebrateText">Yay!! It's a date ☺️!</h2>
 </div>
 
 <script>
-const noBtn = document.getElementById('noBtn');
 const yesBtn = document.getElementById('yesBtn');
-const area = document.getElementById('buttonArea');
 const celebrate = document.getElementById('celebrate');
 const celebrateImgs = document.querySelectorAll('.celebrate-img');
-
-let dodgeCount = 0;
-const images = ['images/3.jpg', 'images/4.jpg', 'images/6.jpg'];
-
-// ---------- NO BUTTON ----------
-noBtn.addEventListener('mouseenter', () => {
-  dodgeCount++;
-
-  const yesRect = yesBtn.getBoundingClientRect();
-  const areaRect = area.getBoundingClientRect();
-
-  const maxX = area.offsetWidth - noBtn.offsetWidth;
-  const maxY = area.offsetHeight - noBtn.offsetHeight;
-
-  let newLeft, newTop;
-  let attempts = 0;
-
-  do {
-    newLeft = Math.random() * maxX;
-    newTop = Math.random() * maxY;
-
-    const noLeft = areaRect.left + newLeft;
-    const noTop = areaRect.top + newTop;
-    const noRight = noLeft + noBtn.offsetWidth;
-    const noBottom = noTop + noBtn.offsetHeight;
-
-    const overlap = !(noRight < yesRect.left || noLeft > yesRect.right || noBottom < yesRect.top || noTop > yesRect.bottom);
-    attempts++;
-    if (!overlap) break;
-  } while (attempts < 100);
-
-  noBtn.style.left = newLeft + 'px';
-  noBtn.style.top = newTop + 'px';
-
-  const scale = Math.max(0.5, 1 - dodgeCount * 0.05);
-  noBtn.style.transform = `scale(${scale})`;
-
-  const img = document.createElement('img');
-  img.src = images[dodgeCount % images.length];
-  img.className = 'popup-img';
-  const angle = Math.random() * 2 * Math.PI;
-  const distance = 50 + Math.random() * 70;
-  img.style.left = newLeft + Math.cos(angle) * distance + 'px';
-  img.style.top = newTop + Math.sin(angle) * distance + 'px';
-
-  area.appendChild(img);
-  setTimeout(() => img.remove(), 1200);
-});
 
 // ---------- FALLING HEARTS ----------
 function createFallingHeart() {
@@ -229,7 +165,7 @@ function createFallingHeart() {
   setTimeout(() => heart.remove(), 7000);
 }
 
-// ---------- CELEBRATE IMAGES CIRCLE & FLOAT ----------
+// ---------- CELEBRATE IMAGES ORBIT ----------
 let angleOffset = 0;
 function animateCircleImages() {
   const text = document.getElementById('celebrateText');
@@ -256,7 +192,11 @@ function animateCircleImages() {
 // ---------- YES BUTTON ----------
 yesBtn.addEventListener('click', () => {
   celebrate.classList.add('show');
+
+  // Start falling hearts independently
   setInterval(createFallingHeart, 200);
+
+  // Start orbiting images
   animateCircleImages();
 });
 </script>
