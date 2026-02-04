@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Will You Be My Valentine? 💖</title>
+<title>Will You Be My Valentinee? 💖</title>
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; font-family: 'Pacifico', cursive; }
@@ -177,7 +177,7 @@ const celebrateText = document.getElementById('celebrateText');
 let dodgeCount = 0;
 const images = ['images/3.jpg', 'images/4.jpg', 'images/6.jpg'];
 
-// NO BUTTON logic
+// ---------- NO BUTTON ----------
 noBtn.addEventListener('mouseenter', () => {
   dodgeCount++;
   const yesRect = yesBtn.getBoundingClientRect();
@@ -187,8 +187,8 @@ noBtn.addEventListener('mouseenter', () => {
 
   let newLeft, newTop, attempts=0;
   do {
-    newLeft = Math.random()*maxX;
-    newTop = Math.random()*maxY;
+    newLeft = Math.random() * maxX;
+    newTop = Math.random() * maxY;
     const noLeft = areaRect.left + newLeft;
     const noTop = areaRect.top + newTop;
     const noRight = noLeft + noBtn.offsetWidth;
@@ -213,20 +213,20 @@ noBtn.addEventListener('mouseenter', () => {
   setTimeout(()=>img.remove(),1200);
 });
 
-// FALLING HEARTS
+// ---------- FALLING HEARTS ----------
 function createFallingHeart(){
   const heart = document.createElement('div');
   heart.classList.add('falling-heart');
   heart.textContent = '❤️';
   heart.style.left = Math.random()*window.innerWidth+'px';
-  heart.style.top = '-50px';
+  heart.style.top = '-50px'; // start from top
   heart.style.fontSize = (20 + Math.random()*30)+'px';
   heart.style.animationDuration = (4 + Math.random()*3)+'s';
   document.body.appendChild(heart);
   setTimeout(()=>heart.remove(),7000);
 }
 
-// ORBITING IMAGES
+// ---------- CELEBRATE IMAGES CIRCLE & FLOAT ----------
 let angleOffset = 0;
 function animateCircleImages(){
   const centerX = window.innerWidth/2;
@@ -234,7 +234,7 @@ function animateCircleImages(){
   const radius = 180;
 
   celebrateImgs.forEach((img,i)=>{
-    const angle = angleOffset + i*(Math.PI/2);
+    const angle = angleOffset + i * (Math.PI/2);
     const x = centerX + radius*Math.cos(angle) - img.offsetWidth/2;
     const y = centerY + radius*Math.sin(angle) - img.offsetHeight/2;
     const scale = 1 + 0.1*Math.sin(Date.now()/300+i);
@@ -245,12 +245,13 @@ function animateCircleImages(){
   requestAnimationFrame(animateCircleImages);
 }
 
-// YES BUTTON
+// ---------- YES BUTTON ----------
 yesBtn.addEventListener('click',()=>{
   celebrate.classList.add('show');
   celebrateText.classList.add('shake');
-  setInterval(createFallingHeart,300);
-  animateCircleImages();
+
+  setInterval(createFallingHeart,300); // hearts continuously from top
+  animateCircleImages(); // start orbiting images
 });
 </script>
 
