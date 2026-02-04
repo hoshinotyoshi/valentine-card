@@ -62,6 +62,20 @@ button {
   transform: translateX(-50%);
 }
 
+.popup-img {
+  position: absolute;
+  width: 80px;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  animation: pop 0.4s ease;
+  pointer-events: none;
+}
+
+@keyframes pop {
+  from { transform: scale(0.3); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
 .celebrate {
   position: fixed;
   inset: 0;
@@ -87,25 +101,29 @@ button {
   border-radius: 20px;
   position: absolute;
   transition: transform 0.1s linear;
+  z-index: 20;
 }
 
 #celebrateText { 
   color: white; 
   margin-top: 20px; 
   text-shadow: 2px 2px 6px #800033; 
-  font-size: 2rem;
   position: relative;
-  z-index: 5;
-  animation: shake 0.5s infinite alternate;
+  z-index: 25;
+  font-size: 2rem;
 }
 
-/* Shaking text */
+/* Shake animation for text */
 @keyframes shake {
-  0% { transform: translateX(0px); }
-  25% { transform: translateX(-5px); }
-  50% { transform: translateX(5px); }
-  75% { transform: translateX(-5px); }
-  100% { transform: translateX(5px); }
+  0% { transform: translate(0px, 0px); }
+  25% { transform: translate(-5px, 0px); }
+  50% { transform: translate(5px, 0px); }
+  75% { transform: translate(-5px, 0px); }
+  100% { transform: translate(0px, 0px); }
+}
+
+.shake {
+  animation: shake 0.2s infinite;
 }
 
 /* Falling hearts */
@@ -115,7 +133,7 @@ button {
   pointer-events: none;
   font-size: 20px;
   user-select: none;
-  z-index: 9;
+  z-index: 30;
   animation-name: fall;
   animation-timing-function: linear;
   animation-iteration-count: 1;
@@ -149,54 +167,89 @@ button {
 </div>
 
 <script>
+const noBtn = document.getElementById('noBtn');
 const yesBtn = document.getElementById('yesBtn');
+const area = document.getElementById('buttonArea');
 const celebrate = document.getElementById('celebrate');
 const celebrateImgs = document.querySelectorAll('.celebrate-img');
+const celebrateText = document.getElementById('celebrateText');
 
-// ---------- FALLING HEARTS ----------
-function createFallingHeart() {
+let dodgeCount = 0;
+const images = ['images/3.jpg', 'images/4.jpg', 'images/6.jpg'];
+
+// NO BUTTON logic
+noBtn.addEventListener('mouseenter', () => {
+  dodgeCount++;
+  const yesRect = yesBtn.getBoundingClientRect();
+  const areaRect = area.getBoundingClientRect();
+  const maxX = area.offsetWidth - noBtn.offsetWidth;
+  const maxY = area.offsetHeight - noBtn.offsetHeight;
+
+  let newLeft, newTop, attempts=0;
+  do {
+    newLeft = Math.random()*maxX;
+    newTop = Math.random()*maxY;
+    const noLeft = areaRect.left + newLeft;
+    const noTop = areaRect.top + newTop;
+    const noRight = noLeft + noBtn.offsetWidth;
+    const noBottom = noTop + noBtn.offsetHeight;
+    const overlap = !(noRight < yesRect.left || noLeft > yesRect.right || noBottom < yesRect.top || noTop > yesRect.bottom);
+    attempts++;
+    if(!overlap) break;
+  } while(attempts<100);
+
+  noBtn.style.left = newLeft+'px';
+  noBtn.style.top = newTop+'px';
+  noBtn.style.transform = `scale(${Math.max(0.5,1-dodgeCount*0.05)})`;
+
+  const img = document.createElement('img');
+  img.src = images[dodgeCount % images.length];
+  img.className = 'popup-img';
+  const angle = Math.random() * Math.PI * 2;
+  const distance = 50 + Math.random()*70;
+  img.style.left = newLeft + Math.cos(angle)*distance + 'px';
+  img.style.top = newTop + Math.sin(angle)*distance + 'px';
+  area.appendChild(img);
+  setTimeout(()=>img.remove(),1200);
+});
+
+// FALLING HEARTS
+function createFallingHeart(){
   const heart = document.createElement('div');
   heart.classList.add('falling-heart');
   heart.textContent = '❤️';
-  heart.style.left = Math.random() * window.innerWidth + 'px';
-  heart.style.fontSize = (20 + Math.random() * 30) + 'px';
-  heart.style.animationDuration = (4 + Math.random() * 3) + 's';
+  heart.style.left = Math.random()*window.innerWidth+'px';
+  heart.style.top = '-50px';
+  heart.style.fontSize = (20 + Math.random()*30)+'px';
+  heart.style.animationDuration = (4 + Math.random()*3)+'s';
   document.body.appendChild(heart);
-  setTimeout(() => heart.remove(), 7000);
+  setTimeout(()=>heart.remove(),7000);
 }
 
-// ---------- CELEBRATE IMAGES ORBIT ----------
+// ORBITING IMAGES
 let angleOffset = 0;
-function animateCircleImages() {
-  const text = document.getElementById('celebrateText');
-  const rect = text.getBoundingClientRect();
-  const containerRect = celebrate.getBoundingClientRect();
-
-  const centerX = rect.left - containerRect.left + rect.width / 2;
-  const centerY = rect.top - containerRect.top + rect.height / 2;
+function animateCircleImages(){
+  const centerX = window.innerWidth/2;
+  const centerY = window.innerHeight/2;
   const radius = 180;
 
-  celebrateImgs.forEach((img, i) => {
-    const angle = angleOffset + i * (Math.PI / 2);
-    const x = centerX + radius * Math.cos(angle) - img.offsetWidth / 2;
-    const y = centerY + radius * Math.sin(angle) - img.offsetHeight / 2;
-    const scale = 1 + 0.1 * Math.sin(Date.now()/300 + i);
-    img.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
-    img.style.opacity = 1;
+  celebrateImgs.forEach((img,i)=>{
+    const angle = angleOffset + i*(Math.PI/2);
+    const x = centerX + radius*Math.cos(angle) - img.offsetWidth/2;
+    const y = centerY + radius*Math.sin(angle) - img.offsetHeight/2;
+    const scale = 1 + 0.1*Math.sin(Date.now()/300+i);
+    img.style.transform = `translate(${x}px,${y}px) scale(${scale})`;
   });
 
   angleOffset += 0.02;
   requestAnimationFrame(animateCircleImages);
 }
 
-// ---------- YES BUTTON ----------
-yesBtn.addEventListener('click', () => {
+// YES BUTTON
+yesBtn.addEventListener('click',()=>{
   celebrate.classList.add('show');
-
-  // Start falling hearts independently
-  setInterval(createFallingHeart, 200);
-
-  // Start orbiting images
+  celebrateText.classList.add('shake');
+  setInterval(createFallingHeart,300);
   animateCircleImages();
 });
 </script>
